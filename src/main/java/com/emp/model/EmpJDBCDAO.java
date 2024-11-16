@@ -11,15 +11,15 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 	public static final String passwd = "Ruru3089";
 
 	private static final String INSERT_STMT = 
-		"INSERT INTO auth (managerNo, managerName, managerAccount, authNo, authTitle, authContext) VALUES (?, ?, ?, ?, ?, ?)";
+		"INSERT INTO counterInform (counterInformNo, counterNo, informMsg, informDate)  VALUES (?, ?, ?, ?)";
 	private static final String GET_ALL_STMT = 
-		"SELECT managerNo, managerName, managerAccount, authNo, authTitle, authContext FROM auth order by managerNo";
+		"SELECT counterInformNo, counterNo, informMsg, informDate, informRead FROM counterInform order by counterInformNo";
 	private static final String GET_ONE_STMT = 
-		"SELECT managerNo, managerName, managerAccount, authNo, authTitle, authContext FROM auth where managerNo = ?";
+		"SELECT counterInformNo, counterNo, informMsg, informDate, informRead FROM counterInform where counterInformNo = ?";
 	private static final String DELETE = 
-		"DELETE FROM auth where managerNo = ?";
+		"DELETE FROM counterInform where counterInformNo = ?";
 	private static final String UPDATE = 
-		"UPDATE auth set managerName=?, managerAccount=?, authNo=?, authTitle=?, authContext=? where empNo = ?";
+		"UPDATE counterInform set informMsg=?, informDate=? where counterInformNo = ?";
 
 	@Override
 	public void insert(EmpVO empVO) {
@@ -31,12 +31,11 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(INSERT_STMT);
 
-			pstmt.setInt(1, empVO.getManagerNo());
-			pstmt.setString(2, empVO.getManagerName());
-			pstmt.setString(3, empVO.getManagerAccount());
-			pstmt.setInt(4, empVO.getAuthNo());
-			pstmt.setString(5, empVO.getAuthTitle());
-			pstmt.setString(6, empVO.getAuthContext());
+			pstmt.setInt(1, empVO.getCounterInformNo());
+			pstmt.setInt(2, empVO.getCounterNo());
+			pstmt.setString(3, empVO.getInformMsg());
+			pstmt.setDate(4, empVO.getInformDate());
+			
 
 			pstmt.executeUpdate();
 		} catch (ClassNotFoundException e) {
@@ -50,35 +49,30 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 
 	@Override
 	public void update(EmpVO empVO) {
-		Connection con = null;
-		PreparedStatement pstmt = null;
+	    Connection con = null;
+	    PreparedStatement pstmt = null;
 
-		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, userid, passwd);
-			pstmt = con.prepareStatement(UPDATE);
-			
-			pstmt.setInt(1, empVO.getManagerNo());
-			pstmt.setString(2, empVO.getManagerName());
-			pstmt.setString(3, empVO.getManagerAccount());
-			pstmt.setInt(4, empVO.getAuthNo());
-			pstmt.setString(5, empVO.getAuthTitle());
-			pstmt.setString(6, empVO.getAuthContext());
+	    try {
+	        Class.forName(driver);
+	        con = DriverManager.getConnection(url, userid, passwd);
+	        pstmt = con.prepareStatement(UPDATE);
 
-			
+	        pstmt.setString(1, empVO.getInformMsg()); // 設置訊息
+	        pstmt.setDate(2, empVO.getInformDate());  // 設置日期，確保是 java.sql.Date 類型
+	        pstmt.setInt(3, empVO.getCounterInformNo());  // 設置編號
 
-			pstmt.executeUpdate();
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
-		} catch (SQLException se) {
-			throw new RuntimeException("A database error occurred. " + se.getMessage());
-		} finally {
-			closeResources(con, pstmt);
-		}
+	        pstmt.executeUpdate();
+	    } catch (ClassNotFoundException e) {
+	        throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
+	    } catch (SQLException se) {
+	        throw new RuntimeException("A database error occurred. " + se.getMessage());
+	    } finally {
+	        closeResources(con, pstmt);
+	    }
 	}
 
 	@Override
-	public void delete(Integer managerNo) {
+	public void delete(Integer counterInformNo) {
 
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -89,7 +83,7 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(DELETE);
 
-			pstmt.setInt(1, managerNo);
+			pstmt.setInt(1, counterInformNo);
 
 			pstmt.executeUpdate();
 
@@ -122,7 +116,7 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 	}
 
 	@Override
-	public EmpVO findByPrimaryKey(Integer managerNo) {
+	public EmpVO findByPrimaryKey(Integer counterInformNo) {
 		EmpVO empVO = null;
 		Connection con = null;
 		PreparedStatement pstmt = null;
@@ -133,17 +127,19 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 			con = DriverManager.getConnection(url, userid, passwd);
 			pstmt = con.prepareStatement(GET_ONE_STMT);
 
-			pstmt.setInt(1, managerNo);
+			pstmt.setInt(1, counterInformNo);
 			rs = pstmt.executeQuery();
 
 			while (rs.next()) {
-				pstmt.setInt(1, empVO.getManagerNo());
-				pstmt.setString(2, empVO.getManagerName());
-				pstmt.setString(3, empVO.getManagerAccount());
-				pstmt.setInt(4, empVO.getAuthNo());
-				pstmt.setString(5, empVO.getAuthTitle());
-				pstmt.setString(6, empVO.getAuthContext());
-
+				// empVo 也稱為 Domain objects
+				empVO = new EmpVO();
+				empVO.setCounterInformNo(rs.getInt("counterInformNo"));
+				empVO.setCounterNo(rs.getInt("counterNo"));
+				empVO.setInformMsg(rs.getString("informMsg"));
+				empVO.setInformDate(rs.getDate("informDate"));
+				empVO.setInformRead(rs.getInt("informRead"));
+				
+				
 			}
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Couldn't load database driver. " + e.getMessage());
@@ -173,12 +169,12 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 			while (rs.next()) {
 				
 				empVO = new EmpVO();
-				empVO.setManagerNo(rs.getInt("managerNo"));
-				empVO.setManagerName(rs.getString("managerName"));
-				empVO.setManagerAccount(rs.getString("managerAccount"));
-				empVO.setAuthNo(rs.getInt("authNo"));
-				empVO.setAuthTitle(rs.getString("authTitle"));
-				empVO.setAuthContext(rs.getString("authContext"));
+				empVO.setCounterInformNo(rs.getInt("counterInformNo"));
+				empVO.setCounterNo(rs.getInt("counterNo"));
+				empVO.setInformMsg(rs.getString("informMsg"));
+				empVO.setInformDate(rs.getDate("informDate"));
+				empVO.setInformRead(rs.getInt("informRead"));
+				
 				list.add(empVO); // Store the row in the list
 			}
 		} catch (ClassNotFoundException e) {
@@ -223,7 +219,7 @@ public class EmpJDBCDAO implements EmpDAO_interface {
 		EmpJDBCDAO dao =new EmpJDBCDAO();
 		List<EmpVO> empVO = dao.getAll();
 		for(EmpVO emp :empVO) {
-			System.out.println(emp.getManagerName());
+			System.out.println(emp.getCounterInformNo());
 		}
 	}
 }

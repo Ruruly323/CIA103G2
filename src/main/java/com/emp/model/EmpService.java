@@ -10,42 +10,41 @@ public class EmpService {
 		dao = new EmpJDBCDAO();
 	}
 
-	public EmpVO addEmp(Integer managerNo, String managerName, String managerAccount, Integer authNo, String authTitle, String authContext) {
+	public EmpVO addEmp(Integer counterInformNo, Integer counterNo, String informMsg, java.sql.Date informDate) {
 
 		EmpVO empVO = new EmpVO();
 
-		empVO.setManagerNo(managerNo);
-		empVO.setManagerName(managerName);
-		empVO.setManagerAccount(managerAccount);
-		empVO.setAuthNo(authNo);
-		empVO.setAuthTitle(authTitle);
-		empVO.setAuthContext(authContext);
+		empVO.setCounterInformNo(counterInformNo);
+		empVO.setCounterNo(counterNo);
+		empVO.setInformMsg(informMsg);
+		empVO.setInformDate(informDate);
+		
+		
+		
 		dao.insert(empVO);
 
 		return empVO;
 	}
 
-	public EmpVO updateEmp(Integer managerNo, String managerName, String managerAccount, Integer authNo, String authTitle, String authContext) {
+	public EmpVO updateEmp(Integer counterInformNo, String informMsg, java.sql.Date informDate) {
 
 		EmpVO empVO = new EmpVO();
 
-		empVO.setManagerNo(managerNo);
-		empVO.setManagerName(managerName);
-		empVO.setManagerAccount(managerAccount);
-		empVO.setAuthNo(authNo);
-		empVO.setAuthTitle(authTitle);
-		empVO.setAuthContext(authContext);
+		empVO.setCounterInformNo(counterInformNo);		
+		empVO.setInformMsg(informMsg);
+		empVO.setInformDate(informDate);
+		
 		dao.update(empVO);
 
 		return empVO;
 	}
 
-	public void deleteEmp(Integer managerNo) {
-		dao.delete(managerNo);
+	public void deleteEmp(Integer counterInformNo) {
+		dao.delete(counterInformNo);
 	}
 
-	public EmpVO getOneEmp(Integer managerNo) {
-		return dao.findByPrimaryKey(managerNo);
+	public EmpVO getOneEmp(Integer counterInformNO) {
+		return dao.findByPrimaryKey(counterInformNO);
 	}
 
 	public List<EmpVO> getAll() {

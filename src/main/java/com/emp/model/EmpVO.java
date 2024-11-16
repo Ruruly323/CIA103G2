@@ -1,65 +1,48 @@
 package com.emp.model;
 import java.sql.Date;
 
-public class EmpVO implements java.io.Serializable{
-	private Integer managerNo;
-	private String managerName;
-	private String managerAccount;
-	private Integer authNo;
-	private String authTitle;
-	private String authContext;
-	
-	public EmpVO() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-	
-	public EmpVO(Integer managerNo, String managerName, String managerAccount, Integer authNo, String authTitle,
-			String authContext) {
-		super();
-		this.managerNo = managerNo;
-		this.managerName = managerName;
-		this.managerAccount = managerAccount;
-		this.authNo = authNo;
-		this.authTitle = authTitle;
-		this.authContext = authContext;
-	}
 
-	public Integer getManagerNo() {
-		return managerNo;
+public class EmpVO implements java.io.Serializable{
+	private Integer counterInformNo;
+	private Integer counterNo;
+	private String informMsg;
+	private Date informDate;
+	private Integer informRead;
+	
+	
+	public Integer getCounterInformNo() {
+        return counterInformNo != null ? counterInformNo : 0; // 返回預設值
+    }
+
+    public void setCounterInformNo(Integer counterInformNo) {
+        this.counterInformNo = counterInformNo;
+    }
+
+    public Integer getCounterNo() {
+        return counterNo != null ? counterNo : 0; // 返回預設值
+    }
+
+    public void setCounterNo(Integer counterNo) {
+        this.counterNo = counterNo;
+    }
+	public String getInformMsg() {
+		return informMsg;
 	}
-	public void setManagerNo(Integer managerNo) {
-		this.managerNo = managerNo;
+	public void setInformMsg(String informMsg) {
+		this.informMsg = informMsg;
 	}
-	public String getManagerName() {
-		return managerName;
+	public Date getInformDate() {
+		return informDate;
 	}
-	public void setManagerName(String managerName) {
-		this.managerName = managerName;
+	public void setInformDate(Date informDate) {
+		this.informDate = informDate;
 	}
-	public String getManagerAccount() {
-		return managerAccount;
+	public Integer getInformRead() {
+		 return informRead != null ? informRead : 0;
 	}
-	public void setManagerAccount(String managerAccount) {
-		this.managerAccount = managerAccount;
+	public void setInformRead(Integer informRead) {
+		this.informRead = informRead;
 	}
-	public Integer getAuthNo() {
-		return authNo;
-	}
-	public void setAuthNo(Integer authNo) {
-		this.authNo = authNo;
-	}
-	public String getAuthTitle() {
-		return authTitle;
-	}
-	public void setAuthTitle(String authTitle) {
-		this.authTitle = authTitle;
-	}
-	public String getAuthContext() {
-		return authContext;
-	}
-	public void setAuthContext(String authContext) {
-		this.authContext = authContext;
-	}
+	
 		
 }
